@@ -62,6 +62,12 @@ public class App {
                 case "h":
                     commandList.printAllCommands();
                     break;
+                case "delete":
+                    deleteBook();
+                    break;
+                case "d":
+                    deleteBook();
+                    break;    
                 default:
                     io.print("unknown command");
                     break;
@@ -80,6 +86,14 @@ public class App {
             return;
         }
         io.print(service.modifyCurrentPage(id, page));
+    }
+    public void deleteBook() {
+        io.print("If necessary, check id with the command 'list'.");
+        String id = io.readLine("Book's id (empty to return):");
+        if (id.equals("")) {
+            return;
+        }
+        io.print(service.deleteBook(id));
     }
 
     public void addBook() {

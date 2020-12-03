@@ -89,6 +89,35 @@ public class BookmarkService {
             return "Book's progress successfully updated!";
         }
     }
+    /**
+     * deletes book from database
+     * * @param id user entered
+     */
+    public String deleteBook(String idString) {
+        
+        int id;
+        Book book;
+        
+        try {
+            id = Integer.parseInt(idString);
+        } catch (NumberFormatException e) {
+            return "Error! ID should be number.";
+        }
+        
+        try {
+            book = bookDao.getBookById(id);
+            if (book.equals(null)) {
+                return "placeholder text";
+            }
+        } catch (Exception e) {
+            return "Error! Book ID not found.";
+        }    
+        
+        bookDao.deleteBook(id);
+        return "Book deleted succesfully!";
+        
+        
+    }
 
     /**
      * calls BookDao's method listAll to list books

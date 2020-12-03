@@ -60,6 +60,7 @@ public class DBDao implements BookDao {
 
     @Override
     public Book getBookById(int id) {
+        
         Connection connection = connect();
         ResultSet rs;
         Book book = null;
@@ -96,6 +97,22 @@ public class DBDao implements BookDao {
         } finally {
             closeConnection(connection);
         }
+    }
+    @Override
+    public void deleteBook(int id) {
+        
+        Connection connection = connect();
+        
+        try {
+            PreparedStatement p = connection.prepareStatement("DELETE FROM Book WHERE id = (?)");
+            p.setInt(1, id);
+            p.execute();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        } finally {
+            closeConnection(connection);
+        }
+        
     }
 
     private void createDatabaseAndTablesIfDoNotExists(String newDBname) {

@@ -48,5 +48,10 @@ public class InMemoryBookDao implements BookDao {
         }
         return foundBook;
     }
+    @Override
+    public void deleteBook(int id) {
+        Book book = getBookById(id);
+        books.remove(book);
+    }
     
 }

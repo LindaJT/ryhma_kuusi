@@ -33,6 +33,7 @@ class Command {
             commands.add(new Command("| list      |", " l         |", " List all bookmarks."));
             commands.add(new Command("| modpage   |", " m         |", " Modify current page."));
             commands.add(new Command("| help      |", " h         |", " Show commands, shortcuts and descriptions."));
+            commands.add(new Command("| delete    |", " d         |", " Delete book permanently"));
         }
 
         public void printAllCommands() {
