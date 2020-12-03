@@ -17,7 +17,7 @@ public class BookmarkService {
 
     private final IO io;
     private final BookDao bookDao;
-    private ArrayList<Tag> tags;
+    private final ArrayList<Tag> tags;
 
     public BookmarkService(BookDao bookDao, IO io) {
         this.bookDao = bookDao;
@@ -69,6 +69,7 @@ public class BookmarkService {
      * false
      */
     public boolean addBookTags(String inputTitle, String inputAuthor, String inputPages, String currentPage, ArrayList<String> tagsList) {
+        tags.clear();
         if (isBlankOrEmpty(currentPage)) {
             currentPage = "0";
         }
@@ -161,7 +162,6 @@ public class BookmarkService {
             List<Tag> tagList = book.getTags();
             String sana = "";
             sana = tagList.stream().map((t) -> t.getName() + " ").reduce(sana, String::concat);
-            io.print(sana);
             io.print("Id: " + book.getId()
                     + " | Title: " + book.getTitle()
                     + " | Author: " + book.getAuthor()

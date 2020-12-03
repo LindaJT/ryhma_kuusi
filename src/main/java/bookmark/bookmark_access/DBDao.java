@@ -17,7 +17,7 @@ public class DBDao implements BookDao {
 
     private final String url;
     private final List<Book> books;
-    
+
     /**
      * Create database with specific name
      *
@@ -54,12 +54,20 @@ public class DBDao implements BookDao {
 
     /**
      * @param book - Book object to be added
+     * @return books id
      */
     @Override
     public int addBook(Book book) {
         Connection connection = connect();
-        int bookId = addBookStatement(connection, book);
-        closeConnection(connection);
+        int bookId = 0;
+        try {
+            bookId = addBookStatement(connection, book);
+            closeConnection(connection);
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        } finally {
+            closeConnection(connection);
+        }
         return bookId;
     }
     
@@ -73,8 +81,14 @@ public class DBDao implements BookDao {
     @Override
     public void addTag(Tag tag, int bookId) {
         Connection connection = connect();
-        int tagId = addTagStatement(connection, tag);
-        insertIntoBookTagMappingTable(bookId, tagId);
+        try {
+            int tagId = addTagStatement(connection, tag);
+            insertIntoBookTagMappingTable(bookId, tagId);
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        } finally {
+            closeConnection(connection);
+        }
         closeConnection(connection);
     }
     
@@ -129,20 +143,16 @@ public class DBDao implements BookDao {
      * @param id book id
      */
     @Override
-    public void deleteBook(int id) {
-        
+    public void deleteBook(int id) { 
         Connection connection = connect();
-        
         try {
-            PreparedStatement p = connection.prepareStatement("DELETE FROM Book WHERE id = (?)");
-            p.setInt(1, id);
-            p.execute();
+            deleteBookFromDatabase(connection, id);
+            deleteTagFromDatabase(connection, id);
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
         } finally {
             closeConnection(connection);
         }
-        
     }
     
     /**
@@ -164,10 +174,12 @@ public class DBDao implements BookDao {
             tag = new Tag(rs.getString("name"));
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
+        } finally {
+            closeConnection(connection);
         }
-        closeConnection(connection);
         return tag;
     }
+    
      /**
       * Connect to database
       * @return connection
@@ -249,7 +261,7 @@ public class DBDao implements BookDao {
      * @param book
      * @return 
      */
-    private int addBookStatement(Connection connection, Book book) {
+    private int addBookStatement(Connection connection, Book book) throws SQLException {
         final int eka = 1;
         final int toka = 2;
         final int kolmas = 3;
@@ -279,7 +291,7 @@ public class DBDao implements BookDao {
      * @param tag
      * @return 
      */
-    private int addTagStatement(Connection connection, Tag tag) {
+    private int addTagStatement(Connection connection, Tag tag) throws SQLException {
         final int eka = 1;
         try {
             String query = "INSERT INTO Tag (name) VALUES (?)";
@@ -334,7 +346,7 @@ public class DBDao implements BookDao {
         final int eka = 1;
         ArrayList<Tag> tags = new ArrayList<>();
         try {
-            String query = "SELECT tag.name FROM Tag JOIN Book_tag_mapping ON tag_id = (?)";
+            String query = "SELECT tag.name FROM Tag JOIN Book_tag_mapping ON Tag.id = Book_tag_mapping.tag_id WHERE book_id = (?)";
             PreparedStatement p = connection
                 .prepareStatement(query);
             p.setInt(eka, id);
@@ -388,6 +400,22 @@ public class DBDao implements BookDao {
             if (connection != null) {
                 connection.close();
             }
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        }
+    }
+    
+    private void deleteBookFromDatabase(Connection connection, int bookId) throws SQLException {
+        PreparedStatement p = connection.prepareStatement("DELETE FROM Book WHERE id = (?)");
+        p.setInt(1, bookId);
+        p.execute();
+    }
+    
+    private void deleteTagFromDatabase(Connection connection, int bookId) throws SQLException {
+        try {
+            PreparedStatement p = connection.prepareStatement("DELETE FROM Book_tag_mapping WHERE book_id = (?)");
+            p.setInt(1, bookId);
+            p.execute();
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
         }
