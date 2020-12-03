@@ -30,7 +30,7 @@ public class Stepdefs {
     public void setUp() {
         bookDao = new DBDao("cucumberTest.db");   
         inputLines = new ArrayList<>(); 
-        bookDao.add(new Book("Kirja1", "kirjailija1", 100, 1)); //id 1, book with id 2 will be created in add book feature   
+        bookDao.addBook(new Book("Kirja1", "kirjailija1", 100, 1)); //id 1, book with id 2 will be created in add book feature   
     }
     
     @After

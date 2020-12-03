@@ -30,7 +30,7 @@ public class BookmarkServiceTest {
         inputLines = new ArrayList<>();
         io = new StubIO(inputLines);
         service = new BookmarkService(bookDao, io);
-        bookDao.add(new Book("Kirja1", "kirjailija1", 100, 1));    
+        bookDao.addBook(new Book("Kirja1", "kirjailija1", 100, 1));    
     }
     
     @Test

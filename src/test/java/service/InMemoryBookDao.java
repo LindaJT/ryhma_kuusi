@@ -7,6 +7,7 @@ package service;
 
 import bookmark.bookmark_access.BookDao;
 import bookmark.domain.Book;
+import bookmark.domain.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,8 @@ import java.util.List;
  */
 public class InMemoryBookDao implements BookDao {
     
-    private List<Book> books;
+    private final List<Book> books;
+    private List<Tag> tags;
     
     public InMemoryBookDao() {
         this.books = new ArrayList<>();
@@ -28,8 +30,9 @@ public class InMemoryBookDao implements BookDao {
     }
 
     @Override
-    public void add(Book book) {
+    public int addBook(Book book) {
         this.books.add(book);
+        return 0;
     }
 
     @Override
@@ -53,5 +56,20 @@ public class InMemoryBookDao implements BookDao {
         Book book = getBookById(id);
         books.remove(book);
     }
-    
+
+    @Override
+    public void addTag(Tag tag, int i) {
+        this.tags.add(tag);
+    }
+
+    @Override
+    public Tag getTagByName(String name) {
+        Tag foundTag = null;
+        for (Tag t : this.tags) {
+            if (t.getName().equals(name)) {
+                foundTag = t;
+            }
+        }
+        return foundTag;
+    }
 }
