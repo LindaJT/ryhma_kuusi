@@ -12,15 +12,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author kaila
- */
+
 public class DBDao implements BookDao {
 
     private final String url;
     private final List<Book> books;
-
+    
+    /**
+     * Create database with specific name
+     *
+     * @param dbName
+     */
     public DBDao(String dbName) {
         url = "jdbc:sqlite:" + dbName;
         books = new ArrayList<>();
@@ -43,7 +45,7 @@ public class DBDao implements BookDao {
                 books.add(book);
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         } finally {
             closeConnection(connection);
         }
@@ -61,6 +63,13 @@ public class DBDao implements BookDao {
         return bookId;
     }
     
+    /**
+     * Add a tag to database and
+     * create connection between book and tag using bookid
+     * 
+     * @param tag
+     * @param bookId
+     */
     @Override
     public void addTag(Tag tag, int bookId) {
         Connection connection = connect();
@@ -68,18 +77,22 @@ public class DBDao implements BookDao {
         insertIntoBookTagMappingTable(bookId, tagId);
         closeConnection(connection);
     }
-
+    
+    /**
+     * Find book by id
+     * @param id
+     * @return foudend book
+     */
     @Override
     public Book getBookById(int id) {
-        
         Connection connection = connect();
         ResultSet rs;
         Book book = null;
-
+        final int eka = 1;
         try {
-            Statement statement = connection.createStatement();
-            String sql = "select * from book WHERE id = " + id;
-            rs = statement.executeQuery(sql);
+            PreparedStatement p = connection.prepareStatement("select * from book WHERE id = (?)");
+            p.setInt(eka, id);
+            rs = p.executeQuery();
             book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
                     rs.getInt("currentpage"));
         } catch (SQLException e) {
@@ -87,16 +100,17 @@ public class DBDao implements BookDao {
         } finally {
             closeConnection(connection);
         }
-        
         return book;
-
     }
-
+    
+    /**
+     * Modify books current page
+     * @param id book id
+     * @param page current page number to set
+     */
     @Override
     public void modifyCurrentPage(int id, int page) {
-
         Connection connection = connect();
-
         try {
             PreparedStatement p = connection.prepareStatement("UPDATE Book "
                     + "SET currentpage = (?) WHERE id = (?)");
@@ -104,11 +118,16 @@ public class DBDao implements BookDao {
             p.setInt(2, id);
             p.executeUpdate();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         } finally {
             closeConnection(connection);
         }
     }
+    
+    /**
+     * Delete book from database
+     * @param id book id
+     */
     @Override
     public void deleteBook(int id) {
         
@@ -119,13 +138,56 @@ public class DBDao implements BookDao {
             p.setInt(1, id);
             p.execute();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         } finally {
             closeConnection(connection);
         }
         
     }
+    
+    /**
+     * Find tag from database by name
+     * @param tagName
+     * @return founded tag
+     */
+    @Override
+    public Tag getTagByName(String tagName) {
+        final int eka = 1;
+        Tag tag = null;
+        ResultSet rs;
+        Connection connection = connect();
+        try {
+            PreparedStatement p = connection
+                .prepareStatement("select * FROM tag WHERE name = (?)");
+            p.setString(eka, tagName);
+            rs = p.executeQuery();
+            tag = new Tag(rs.getString("name"));
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        }
+        closeConnection(connection);
+        return tag;
+    }
+     /**
+      * Connect to database
+      * @return connection
+      */
+    private Connection connect() {
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+            Statement statement = connection.createStatement();
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        }
+        return connection;
+    }
 
+    /**
+     * Create database with specific name and
+     * create book, tag and bookTagMapping tables
+     * @param newDBname 
+     */
     private void createDatabaseAndTablesIfDoNotExists(String newDBname) {
         Connection connection = null;
         File file = new File(newDBname);
@@ -137,24 +199,18 @@ public class DBDao implements BookDao {
                 createTagTable(statement);
                 createBookTagMappingTaple(statement);
             } catch (SQLException e) {
-                System.err.println(e.getMessage());
+                //System.err.println(e.getMessage());
             } finally {
                 closeConnection(connection);
             }
         }
     }
-
-    private Connection connect() {
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(url);
-            Statement statement = connection.createStatement();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        return connection;
-    }
     
+    /**
+     * Function to create book table
+     * @param statement
+     * @throws SQLException 
+     */
     private void createBookTable(Statement statement) throws SQLException {
         statement.execute("CREATE TABLE Book ("
             + "id INTEGER PRIMARY KEY, "
@@ -164,6 +220,11 @@ public class DBDao implements BookDao {
             + "currentpage INTEGER)");
     }
     
+    /**
+     * Function to create tag table
+     * @param statement
+     * @throws SQLException 
+     */
     private void createTagTable(Statement statement) throws SQLException {
         statement.execute("CREATE TABLE Tag ("
             + "id INTEGER PRIMARY KEY, "
@@ -171,12 +232,23 @@ public class DBDao implements BookDao {
             + "UNIQUE(name))");
     }
     
+    /**
+     * Function to create bookTagMapping table
+     * @param statement
+     * @throws SQLException 
+     */
     private void createBookTagMappingTaple(Statement statement) throws SQLException {
         statement.execute("CREATE TABLE Book_tag_mapping ("
             + "book_id INTEGER, "
             + "tag_id INTEGER)");
     }
 
+    /**
+     * Function to add a book to database
+     * @param connection
+     * @param book
+     * @return 
+     */
     private int addBookStatement(Connection connection, Book book) {
         final int eka = 1;
         final int toka = 2;
@@ -196,11 +268,17 @@ public class DBDao implements BookDao {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
         return 0;
     }
     
+    /**
+     * Function to add a tag to database
+     * @param connection
+     * @param tag
+     * @return 
+     */
     private int addTagStatement(Connection connection, Tag tag) {
         final int eka = 1;
         try {
@@ -218,13 +296,19 @@ public class DBDao implements BookDao {
                 return tagId;
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
         return 0;
     }
     
+    /**
+     * Function to get tag id by tag name
+     * @param connection
+     * @param tag
+     * @return 
+     */
     private int getTagId(Connection connection, Tag tag) {
-         final int eka = 1;
+        final int eka = 1;
         try {
             String query = "select * Tag WHERE name = (?)";
             PreparedStatement p = connection
@@ -235,11 +319,17 @@ public class DBDao implements BookDao {
                 return rs.getInt("id");
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
         return 0;
     }
     
+    /**
+     * Function to retrieve book tags  by book id from database
+     * @param connection
+     * @param id
+     * @return list filled with book tags
+     */
     private ArrayList<Tag> getTagsByBookId(Connection connection, int id) {
         final int eka = 1;
         ArrayList<Tag> tags = new ArrayList<>();
@@ -253,36 +343,22 @@ public class DBDao implements BookDao {
                 tags.add(new Tag(rs.getString("name")));
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
         return tags;
     }
     
-    @Override
-    public Tag getTagByName(String tagName) {
-        final int eka = 1;
-        Tag tag = null;
-        ResultSet rs;
-        Connection connection = connect();
-        try {
-            PreparedStatement p = connection
-                .prepareStatement("select * FROM tag WHERE name = (?)");
-            p.setString(eka, tagName);
-            rs = p.executeQuery();
-            tag = new Tag(rs.getString("name"));
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        closeConnection(connection);
-        return tag;
-    }
-
+    /**
+     * Helper function to get all books from book table
+     * @param connection
+     * @return statement to get books
+     */
     private ResultSet getBooksResultSet(Connection connection) {
         try {
             Statement statement = connection.createStatement();
             return statement.executeQuery("select * from book");
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
         return null;
     }
@@ -299,17 +375,21 @@ public class DBDao implements BookDao {
             p.setInt(toka, tagId);
             p.executeUpdate();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
     }
-
+    
+    /**
+     * Close connection
+     * @param connection 
+     */
     private void closeConnection(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         }
     }
 }
