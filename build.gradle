@@ -29,8 +29,7 @@ java {
 
 repositories {
     jcenter()
-    mavenCentral()
-    maven { url "http://repository.ow2.org/nexus/content/repositories/releases/" }
+    mavenCentral()   
 }
 
 project.ext {
