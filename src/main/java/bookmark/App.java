@@ -7,6 +7,7 @@ import bookmark.bookmark_access.DBDao;
 import bookmark.services.BookmarkService;
 import bookmark.io.ConsoleIO;
 import command.CommandList;
+import java.util.ArrayList;
 
 public class App {
 
@@ -101,12 +102,30 @@ public class App {
         String author = io.readLine("Author: ");
         String pages = io.readLine("Number of pages: ");
         String currentPage = io.readLine("Page you're currently on: ");
-        if (service.addBook(title, author, pages, currentPage)) {
+        ArrayList<String> tags = new ArrayList<>();
+        while (true) {
+            String tag = io.readLine("Enter tag or leave empty to continue");
+            if (tag.trim().isEmpty()) {
+                break;
+            }
+            tags.add(tag.trim());
+        }
+        if (!tags.isEmpty()) {
+            tagFeature(title, author, pages, currentPage, tags);
+        } else if (service.addBook(title, author, pages, currentPage)) {
             io.print("Book added successfully");
 
         } else {
             io.print("Error in adding the bookmark");
         }
+    }
+    
+    private void tagFeature(String title, String author, String pages, String currentPage, ArrayList<String> tags) {
+        if (service.addBookTags(title, author, pages, currentPage, tags)) {
+                io.print("Book added successfully");
+            } else {
+                io.print("Error in adding the bookmark");
+            }
     }
 
     public static void main(String[] args) {
