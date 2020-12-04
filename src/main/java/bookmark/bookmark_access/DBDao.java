@@ -62,7 +62,6 @@ public class DBDao implements BookDao {
         int bookId = 0;
         try {
             bookId = addBookStatement(connection, book);
-            closeConnection(connection);
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
         } finally {
@@ -83,13 +82,12 @@ public class DBDao implements BookDao {
         Connection connection = connect();
         try {
             int tagId = addTagStatement(connection, tag);
-            insertIntoBookTagMappingTable(bookId, tagId);
+            insertIntoBookTagMappingTable(connection, bookId, tagId);
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
         } finally {
             closeConnection(connection);
         }
-        closeConnection(connection);
     }
     
     /**
@@ -375,10 +373,9 @@ public class DBDao implements BookDao {
         return null;
     }
     
-    private void insertIntoBookTagMappingTable(int bookId, int tagId) {
+    private void insertIntoBookTagMappingTable(Connection connection, int bookId, int tagId) {
         final int eka = 1;
         final int toka = 2;
-        Connection connection = connect();
         try {
             String query = "INSERT INTO Book_tag_mapping (book_id, tag_id) VALUES (?, ?)";
             PreparedStatement p = connection
