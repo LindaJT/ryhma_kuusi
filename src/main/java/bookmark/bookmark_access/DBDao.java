@@ -291,6 +291,10 @@ public class DBDao implements BookDao {
      */
     private int addTagStatement(Connection connection, Tag tag) throws SQLException {
         final int eka = 1;
+        int tagId = getTagId(connection, tag);
+        if(tagId != 0) {
+            return tagId;
+        }
         try {
             String query = "INSERT INTO Tag (name) VALUES (?)";
             PreparedStatement p = connection
@@ -300,10 +304,6 @@ public class DBDao implements BookDao {
             ResultSet rs = p.getGeneratedKeys();
             if (rs.next()) {
                 return rs.getInt(1);
-            }
-            int tagId = getTagId(connection, tag);
-            if (tagId != 0) {
-                return tagId;
             }
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
@@ -320,7 +320,7 @@ public class DBDao implements BookDao {
     private int getTagId(Connection connection, Tag tag) {
         final int eka = 1;
         try {
-            String query = "select * Tag WHERE name = (?)";
+            String query = "select * FROM Tag WHERE name = (?)";
             PreparedStatement p = connection
                 .prepareStatement(query);
             p.setString(eka, tag.getName());
