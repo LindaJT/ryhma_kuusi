@@ -11,8 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 public class DBDao implements BookDao {
 
@@ -184,9 +184,9 @@ public class DBDao implements BookDao {
         }
         return tag;
     }
-    
+
     @Override
-    public boolean removeTag(int bookId, int tagId){
+    public boolean removeTag(int bookId, int tagId) {
         Connection connection = connect();
         try {
             deleteTagBookConnectionFromDatabase(connection, bookId, tagId);
@@ -449,7 +449,7 @@ public class DBDao implements BookDao {
             System.err.println(e.getMessage());
         }
     }
-    
+
     private void deleteTagBookConnectionFromDatabase(Connection connection, int bookId) throws SQLException {
         try {
             PreparedStatement p = connection.prepareStatement("DELETE FROM Book_tag_mapping WHERE book_id = (?)");

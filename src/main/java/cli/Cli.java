@@ -115,9 +115,9 @@ public class Cli {
         }
     }
 
-    private void modifyTags() {        
+    private void modifyTags() {
         int id = io.readInt("Give the book's id that you want to modify the tags of: ");
-        if (service.getBookById(id) == null){
+        if (service.getBookById(id) == null) {
             io.print("Invalid id. Aborted.");
             return;
         }
@@ -137,7 +137,7 @@ public class Cli {
                 break;
             case "r":
                 tag = io.readLine("Type the tag you want to remove?");
-                if (service.removeTagFromBook(id, tag)){
+                if (service.removeTagFromBook(id, tag)) {
                     io.print("Tag removed.");
                 } else {
                     io.print("Error! Something went wrong!");

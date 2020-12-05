@@ -16,7 +16,7 @@ application {
 }
 */
 
-checkstyleMain.exclude ('bookmark.App.java')
+checkstyleMain.exclude ('bookmark.Main.java')
 
 checkstyleTest.exclude ('/bookmark/cucumber/*.java')
 
