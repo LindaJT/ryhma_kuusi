@@ -147,6 +147,30 @@ public class Stepdefs {
         assertTrue(io.getPrints().contains(expected));
     }
     
+    @Given("command delete is selected")
+    public void commandDeleteSelected() {
+        inputLines.add("delete");
+    }
+    
+    @Given("book {string} with author {string} and {string} pages is created")
+    public void bookIsAdded(String title, String author, String pages) {
+        inputLines.add(title);
+        inputLines.add(author);
+        inputLines.add(pages);
+    }
+    
+    @When("existing book id {string} is entered")
+    public void validBookIdIsEntered(String id) {
+        inputLines.add(id);
+        runApp();
+    }
+    
+    @When("incorrect book id {string} is entered")
+    public void incorrectBookIdIsEntered(String id) {
+        inputLines.add(id);
+        runApp();
+    }
+
     
     private void runApp() {
         io = new StubIO(inputLines); 
