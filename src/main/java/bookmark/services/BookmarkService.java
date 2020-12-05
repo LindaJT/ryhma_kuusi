@@ -115,7 +115,7 @@ public class BookmarkService {
         return bookDao.getTagsByBookId(id);
     }
 
-    private Book getBookById(int id) {
+    public Book getBookById(int id) {
         return bookDao.getBookById(id);
     }
 

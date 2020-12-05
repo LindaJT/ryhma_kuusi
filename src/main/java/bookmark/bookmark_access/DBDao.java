@@ -112,7 +112,7 @@ public class DBDao implements BookDao {
                     rs.getInt("currentpage"));
             rs.close();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
         } finally {
             closeConnection(connection);
         }

@@ -31,7 +31,7 @@ public class Cli {
 
             System.out.println("");
 
-            String nextCommand = io.readLine("give a command or leave empty to quit:");
+            String nextCommand = io.readLine("Give a command or leave empty to quit:");
 
             if (nextCommand.isEmpty()) {
                 break;
@@ -115,8 +115,12 @@ public class Cli {
         }
     }
 
-    private void modifyTags() {
+    private void modifyTags() {        
         int id = io.readInt("Give the book's id that you want to modify the tags of: ");
+        if (service.getBookById(id) == null){
+            io.print("Invalid id. Aborted.");
+            return;
+        }
         List<Tag> tagList = service.getTags(id);
         io.print("Current tags: ");
         tagList.forEach((t) -> {
@@ -133,7 +137,6 @@ public class Cli {
                 break;
             case "r":
                 tag = io.readLine("Type the tag you want to remove?");
-                
                 if (service.removeTagFromBook(id, tag)){
                     io.print("Tag removed.");
                 } else {
@@ -143,6 +146,7 @@ public class Cli {
             case "":
                 break;
             default:
+                io.print("Invalid command. Aborted.");
                 break;
         }
     }
