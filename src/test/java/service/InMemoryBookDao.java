@@ -83,4 +83,14 @@ public class InMemoryBookDao implements BookDao {
         }
         return foundTag;
     }
+
+    @Override
+    public ArrayList<Tag> getTagsByBookId(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeTag(int tagId, int bookId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

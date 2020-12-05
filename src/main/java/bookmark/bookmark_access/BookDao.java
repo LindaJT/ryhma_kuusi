@@ -2,6 +2,7 @@ package bookmark.bookmark_access;
 
 import bookmark.domain.Book;
 import bookmark.domain.Tag;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface BookDao {
@@ -13,4 +14,6 @@ public interface BookDao {
     Book getBookById(int id);
     void addTag(Tag tag, int id);
     Tag getTagByName(String name);
+    ArrayList<Tag> getTagsByBookId(int id);
+    boolean removeTag(int tagId, int bookId);
 }
