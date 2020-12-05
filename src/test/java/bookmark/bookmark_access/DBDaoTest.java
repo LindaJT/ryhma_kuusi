@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class DBDaoTest {
     
     private Book book;
-    private Tag tag,tag2;
+    private Tag tag, tag2;
     private BookDao dbDao;
     
     @Before
@@ -26,31 +26,62 @@ public class DBDaoTest {
     @After
     public void tearDown() {
         File file = new File("test.db");
-        if(file.delete()){  
+        file.delete();
+        /*if(file.delete()){  
         System.out.println(file.getName() + " deleted");   //getting and printing the file name  
         } else {  
             System.out.println("failed");  
-        }
+        }*/
     }
     
     @Test
-    public void addBookTest() {
+    public void addBook() {
         dbDao.addBook(book);
         assertEquals(dbDao.listAll().get(0).getAuthor(), "Carl Barks");
     }
     
     @Test
-    public void addTagTest() {
+    public void addTag() {
         dbDao.addBook(book);
         dbDao.addTag(tag, 1);
         assertEquals(dbDao.getTagByName("test").getName(), "test");
     }
     
     @Test
-    public void deleteBookTest() {
+    public void addExistingTagDoesNotAddNewTag() {
+        dbDao.addBook(book);
+        int bookId = dbDao.listAll().get(0).getId();
+        dbDao.addTag(tag, bookId);
+        dbDao.addTag(tag, bookId);
+        Book foudedBook = dbDao.listAll().get(0);
+        assertEquals(foudedBook.getTags().size(), 1);
+    }
+    
+    @Test
+    public void canAddMultipleTags() {
+        dbDao.addBook(book);
+        int bookId = dbDao.listAll().get(0).getId();
+        dbDao.addTag(tag, bookId);
+        dbDao.addTag(tag2, bookId);
+        Book foudedBook = dbDao.listAll().get(0);
+        assertEquals(foudedBook.getTags().size(), 2);
+    }
+    
+    @Test
+    public void deleteBook() {
         dbDao.addBook(book);
         dbDao.addTag(tag, 1);
         dbDao.deleteBook(1);
         assertEquals(dbDao.listAll().size(), 0);
+    }
+    
+    @Test
+    public void getCorrectBookById() {
+        dbDao.addBook(book);
+        Book foundedBook = dbDao.getBookById(1);
+        assertEquals(book.getTitle(), foundedBook.getTitle());
+        assertEquals(book.getAuthor(), foundedBook.getAuthor());
+        assertEquals(book.getNumberOfPages(), foundedBook.getNumberOfPages());
+        assertEquals(book.getCurrentPage(), foundedBook.getCurrentPage());
     }
 }

@@ -23,6 +23,7 @@ public class BookmarkServiceTest {
     private BookDao bookDao;
     private List<String> inputLines;
     private BookmarkService service;
+    private ArrayList<String> emptyTagList;
     
     @Before
     public void setUp() {
@@ -30,7 +31,8 @@ public class BookmarkServiceTest {
         inputLines = new ArrayList<>();
         io = new StubIO(inputLines);
         service = new BookmarkService(bookDao, io);
-        bookDao.addBook(new Book("Kirja1", "kirjailija1", 100, 1));    
+        bookDao.addBook(new Book("Kirja1", "kirjailija1", 100, 1));
+        emptyTagList = new ArrayList<>();
     }
     
     @Test
@@ -74,6 +76,93 @@ public class BookmarkServiceTest {
     public void modifyingBookWithNonExcistingIdReturnsErrorMessage() {
         String answer = service.modifyCurrentPage("2", "32");
         assertEquals("Error! Book ID not found.", answer);
+    }
+    
+    @Test
+    public void addBookTagsCanAddBookWithEmptyTagsList() {
+        Boolean success = service.addBookTags("test", "testaaja", "100", "1", emptyTagList);
+        assertTrue(success);
+        assertEquals(2, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCanAddBookWithMultipleTags() {
+        ArrayList<String> tags = new ArrayList<>();
+        tags.add("test");
+        tags.add("endToEndTests");
+        Boolean success = service.addBookTags("test", "testaaja", "100", "1", tags);
+        assertTrue(success);
+        assertEquals(2, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCanAddBookIfCurrentPageEmpty() {
+        Boolean success = service.addBookTags("test", "testaaja", "100", "", emptyTagList);
+        assertTrue(success);
+        assertEquals(2, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCannotAddNegativeCurrentPage() {
+        Boolean success = service.addBookTags("test", "testaaja", "100", "-1", emptyTagList);
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCannotAddBookWithLettersInPages() {
+        Boolean success = service.addBookTags("test", "testaaja", "10s", "", emptyTagList);
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCannotAddBookWithLettersInCurrentPages() {
+        Boolean success = service.addBookTags("test", "testaaja", "10", "10s", emptyTagList);
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCannotAddBookIFCurrentPageGreaterThanPages() {
+        Boolean success = service.addBookTags("test", "testaaja", "10", "11", emptyTagList);
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCannotAddBookIFNoTitle() {
+        Boolean success = service.addBookTags(" ", "testaaja", "10", "1", emptyTagList);
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void addBookTagsCannotAddBookIFNoAuthor() {
+        Boolean success = service.addBookTags("testbook", " ", "10", "1", emptyTagList);
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void canDeleteBook() {
+        String answer = service.deleteBook("0");
+        assertEquals("Book deleted succesfully!", answer);
+        assertEquals(0, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void cannotDeleteNonExistingBook() {
+        String answer = service.deleteBook("1");
+        assertEquals("Error! Book ID not found.", answer);
+        assertEquals(1, bookDao.listAll().size());
+    }
+    
+    @Test
+    public void cannotDeleteBookIfUserInputContainsText() {
+        String answer = service.deleteBook("10s");
+        assertEquals("Error! ID should be number.", answer);
+        assertEquals(1, bookDao.listAll().size());
     }
 
 }
