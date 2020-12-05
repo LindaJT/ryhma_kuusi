@@ -44,8 +44,6 @@ public class BookmarkService {
             return false;
         } else if (Integer.parseInt(inputPages) < Integer.parseInt(currentPage)) {
             return false;
-        } else if (Integer.parseInt(currentPage) < 0) {
-            return false;
         } else if (isBlankOrEmpty(inputTitle) || isBlankOrEmpty(inputAuthor) || isBlankOrEmpty(inputPages)) {
             return false;
         } else {
@@ -77,8 +75,6 @@ public class BookmarkService {
         if (!inputPages.matches(regex) || !currentPage.matches(regex)) {
             return false;
         } else if (Integer.parseInt(inputPages) < Integer.parseInt(currentPage)) {
-            return false;
-        } else if (Integer.parseInt(currentPage) < 0) {
             return false;
         } else if (isBlankOrEmpty(inputTitle) || isBlankOrEmpty(inputAuthor) || isBlankOrEmpty(inputPages)) {
             return false;
