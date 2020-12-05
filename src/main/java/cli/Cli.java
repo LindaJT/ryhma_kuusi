@@ -116,7 +116,13 @@ public class Cli {
     }
 
     private void modifyTags() {
-        int id = io.readInt("Give the book's id that you want to modify the tags of: ");
+        int id = -97531;
+        try {
+            id = io.readInt("Give the book's id that you want to modify the tags of: ");
+        } catch (Exception e) {
+            io.print("Invalid input. Aborted.");
+            return;
+        }
         if (service.getBookById(id) == null) {
             io.print("Invalid id. Aborted.");
             return;

@@ -27,7 +27,7 @@ public class DBDao implements BookDao {
     public DBDao(String dbName) {
         url = "jdbc:sqlite:" + dbName;
         books = new ArrayList<>();
-        createDatabaseAndTablesIfDoNotExists(dbName);
+        createDatabaseAndTablesIfDoesNotExist(dbName);
     }
 
     /**
@@ -185,8 +185,16 @@ public class DBDao implements BookDao {
         return tag;
     }
 
+    /**
+     * Removes a row from Book_tag_mapping and if it is the last one with
+     * that tag_id, also removes the corresponding row from Tag.
+     * 
+     * @param bookId
+     * @param tagId
+     * @return true if successful
+     */
     @Override
-    public boolean removeTag(int bookId, int tagId) {
+    public boolean removeTagConnection(int bookId, int tagId) {
         Connection connection = connect();
         try {
             deleteTagBookConnectionFromDatabase(connection, bookId, tagId);
@@ -194,9 +202,12 @@ public class DBDao implements BookDao {
             System.err.println("Something went wrong.");
             closeConnection(connection);
             return false;
-        } finally {
-            closeConnection(connection);
         }
+        
+        if (!checkIfConnectionsWithId(connection, tagId)) {
+            removeTag(connection, tagId);
+        }
+        closeConnection(connection);
         return true;
     }
 
@@ -206,7 +217,7 @@ public class DBDao implements BookDao {
      *
      * @param newDBname
      */
-    private void createDatabaseAndTablesIfDoNotExists(String newDBname) {
+    private void createDatabaseAndTablesIfDoesNotExist(String newDBname) {
         Connection connection = null;
         File file = new File(newDBname);
         if (!file.exists()) {
@@ -378,6 +389,36 @@ public class DBDao implements BookDao {
             //System.err.println(e.getMessage());
         }
         return tags;
+    }
+    
+    private boolean checkIfConnectionsWithId(Connection connection, int tagId) {
+        final int eka = 1;
+        try {
+            String query = "SELECT * FROM Book_tag_mapping WHERE tag_id = (?)";
+            PreparedStatement p = connection
+                    .prepareStatement(query);
+            p.setInt(eka, tagId);
+            ResultSet rs = p.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        }
+        return false;
+    }
+    
+    private void removeTag(Connection connection, int tagId) {
+        try {
+            String query = "DELETE FROM Tag WHERE id = (?)";
+            PreparedStatement p = connection
+                    .prepareStatement(query);
+            p.setInt(1, tagId);
+            p.execute();
+        } catch (SQLException e) {
+            System.out.println("Something went wrong. Here is an error message: ");
+            System.err.println(e.getMessage());
+        }
     }
 
     /**

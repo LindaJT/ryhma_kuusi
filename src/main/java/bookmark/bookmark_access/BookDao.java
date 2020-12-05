@@ -15,5 +15,5 @@ public interface BookDao {
     void addTag(Tag tag, int id);
     Tag getTagByName(String name);
     ArrayList<Tag> getTagsByBookId(int id);
-    boolean removeTag(int tagId, int bookId);
+    boolean removeTagConnection(int tagId, int bookId);
 }

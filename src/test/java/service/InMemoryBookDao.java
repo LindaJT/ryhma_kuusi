@@ -90,7 +90,7 @@ public class InMemoryBookDao implements BookDao {
     }
 
     @Override
-    public boolean removeTag(int tagId, int bookId) {
+    public boolean removeTagConnection(int tagId, int bookId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

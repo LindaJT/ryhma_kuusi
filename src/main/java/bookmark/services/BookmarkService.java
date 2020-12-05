@@ -108,7 +108,7 @@ public class BookmarkService {
             return false;
         }
         
-        return bookDao.removeTag(bookId, tag.getId());
+        return bookDao.removeTagConnection(bookId, tag.getId());
     }
 
     public List<Tag> getTags(int id) {
