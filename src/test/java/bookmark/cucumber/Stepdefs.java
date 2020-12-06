@@ -170,6 +170,17 @@ public class Stepdefs {
         inputLines.add(id);
         runApp();
     }
+    
+    @When("valid title {string} and author {string} and pages {string} and tag {string} are entered")
+    public void validBookTitleAuthorPagesAndTagAreEntered(String title, String author, String pages, String tag) {
+        inputLines.add(title);
+        inputLines.add(author);
+        inputLines.add(pages);
+        inputLines.add("0");
+        inputLines.add(tag);
+        inputLines.add("");
+        runApp();
+    }
 
     
     private void runApp() {

@@ -164,5 +164,11 @@ public class BookmarkServiceTest {
         assertEquals("Error! ID should be number.", answer);
         assertEquals(1, bookDao.listAll().size());
     }
+    
+    @Test
+    public void addTagToBookAddsTagToExistingBook() {
+        Boolean success = service.addTagToBook(1, "testitagi");
+        assertTrue(success);
+    }
 
 }
