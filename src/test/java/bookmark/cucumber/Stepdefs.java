@@ -226,6 +226,23 @@ public class Stepdefs {
         inputLines.add("tag");
         runApp();
     }
+    @Given("command taglist is selected")
+    public void listBooksByTags() {
+        inputLines.add("taglist");
+    }
+    
+    @When("valid tag {string} is entered")
+    public void validTagIsEntered(String tag) {
+        inputLines.add(tag);
+        runApp();
+    }
+    
+    @When("nonexisting tag {string} is entered")
+    public void nonexistingTagIsEntered(String tag) {
+        inputLines.add(tag);
+        runApp();
+    }
+    
 
     
     private void runApp() {

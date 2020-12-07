@@ -192,14 +192,20 @@ public class BookmarkService {
 
     public void listBooksByTag(String tag) {
         List<Book> taggedList = bookDao.listByTag(tag);
-        System.out.println(taggedList.size());
-        for (Book book : taggedList) {
+        
+        if (taggedList.isEmpty()) {
+            io.print("no books found with tag " + tag);
+        } else {
+            io.print("number of books with tag: " + taggedList.size());
+        /*for (Book book : taggedList) {
             System.out.println(book.getAuthor());
-        }
+        } */
         Collections.sort(taggedList);
         taggedList.forEach((book) -> {
             createBookOutput(book);
         });
+        }
+        
     }
 
     private void createBookOutput(Book book) {
