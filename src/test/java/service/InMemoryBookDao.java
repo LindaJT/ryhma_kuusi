@@ -11,19 +11,22 @@ import bookmark.domain.Tag;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author linjokin
  */
 public class InMemoryBookDao implements BookDao {
-    
+
     private final List<Book> books;
+    private List<Book> taggedBooks;
     private HashMap<Integer, ArrayList<Tag>> tags;
     private ArrayList<Tag> allTags;
-    
+
     public InMemoryBookDao() {
         this.books = new ArrayList<>();
+        this.taggedBooks = new ArrayList<>();
         this.tags = new HashMap<>();
         this.allTags = new ArrayList<>();
     }
@@ -56,7 +59,7 @@ public class InMemoryBookDao implements BookDao {
         }
         return foundBook;
     }
-    
+
     @Override
     public void deleteBook(int id) {
         Book book = getBookById(id);
@@ -107,7 +110,7 @@ public class InMemoryBookDao implements BookDao {
             return false;
         }
         Book b = this.getBookById(bookId);
-        
+
         if (b.getTags() == null) {
             return false;
         }
@@ -124,5 +127,41 @@ public class InMemoryBookDao implements BookDao {
             b.getTags().remove(index);
             return true;
         }
+    }
+
+    @Override
+    public List<Book> listByTag(String tag) {
+        taggedBooks.clear();
+        for (Map.Entry<Integer, ArrayList<Tag>> entry : tags.entrySet()) {
+            for (Tag tag1 : entry.getValue()) {
+                if (tag1.getName().equals(tag))
+                    taggedBooks.add(getBookById(entry.getKey()));
+            }
+        }
+        return taggedBooks;
+    }
+
+    @Override
+    public ArrayList<Book> getBooksByTagId(ArrayList<Tag> selectedTags) {
+        ArrayList<Book> foundBooks = new ArrayList<>();
+        for (Integer bookId : tags.keySet()) {
+            for (Book book : this.books) {
+                if (bookId == book.getId()) {
+                    for (Tag tag : selectedTags) {
+                        if (tags.get(bookId).contains(tag)) {
+                            foundBooks.add(book);
+                        }
+                    }
+                }
+            }
+        }
+        return foundBooks;
+        /*List<Tag> foundTags = new ArrayList<>();
+        for (Book b : this.books) {
+            if (b.getId() == id) {
+                foundTags = (ArrayList<Tag>) b.getTags();
+            }
+        }
+        return (ArrayList<Tag>) foundTags;*/
     }
 }
