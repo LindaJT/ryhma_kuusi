@@ -181,6 +181,51 @@ public class Stepdefs {
         inputLines.add("");
         runApp();
     }
+    
+    @Given("command mt is selected")
+    public void commandModifyTags() {
+        inputLines.add("mt");
+    }
+    
+    @When("valid book id {int} and valid tag name {string} are entered and a is selected")
+    public void validBookIdAndValidTagNameAreEnteredAndAIsSelected(int id, String tag) {
+        inputLines.add(String.valueOf(id));
+        inputLines.add("a");
+        inputLines.add("tag");
+        runApp();
+    }
+    
+    @When("not valid book id {int} and valid tag name {string} are entered and a is selected")
+    public void notValidBookIdAndValidTagNameAreEnteredAndAIsSelected(int id, String tag) {
+        inputLines.add(String.valueOf(id));
+        inputLines.add("a");
+        inputLines.add("tag");
+        runApp();
+    }
+    
+    @When("valid book id {int} and existing tag name {string} are entered and r is selected")
+    public void notValidBookIdAndValidTagNameAreEnteredAndRIsSelected(int id, String tag) {
+        inputLines.add(String.valueOf(id));
+        inputLines.add("r");
+        inputLines.add("tag");
+        runApp();
+    }
+    
+    @When("valid book id {int} and non-existing tag name {string} are entered and r is selected")
+    public void notValidBookIdAndNonExistingTagNameAreEnteredAndRIsSelected(int id, String tag) {
+        inputLines.add(String.valueOf(id));
+        inputLines.add("r");
+        inputLines.add("tag");
+        runApp();
+    }
+    
+    @When("invalid book id {int} and existing tag name {string} are entered and r is selected")
+    public void notValidBookIdAndExistingTagNameAreEnteredAndRIsSelected(int id, String tag) {
+        inputLines.add(String.valueOf(id));
+        inputLines.add("r");
+        inputLines.add("tag");
+        runApp();
+    }
 
     
     private void runApp() {

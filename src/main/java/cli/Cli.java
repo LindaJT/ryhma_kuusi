@@ -140,6 +140,7 @@ public class Cli {
             case "a":
                 tag = io.readLine("Type the tag you want to add?");
                 service.addTagToBook(id, tag);
+                io.print("Tag added");
                 break;
             case "r":
                 tag = io.readLine("Type the tag you want to remove?");

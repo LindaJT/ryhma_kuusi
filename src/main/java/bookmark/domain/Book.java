@@ -108,6 +108,11 @@ public class Book extends Bookmark implements Comparable<Bookmark> {
         this.numberOfPages = newNumberOfPages;
     }
 
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+    
+
     /**
      * @return the author
      */
@@ -142,6 +147,10 @@ public class Book extends Bookmark implements Comparable<Bookmark> {
      */
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**
