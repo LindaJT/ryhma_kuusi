@@ -71,6 +71,12 @@ public class BookmarkServiceTest {
         assertFalse(success);
         assertEquals(1, bookDao.listAll().size());
     }
+    @Test
+    public void cannotAddBookWhereCurrentPageIsBiggerThanPages() {
+        Boolean success = service.addBook("testi", "testaaja", "100", "110");
+        assertFalse(success);
+        assertEquals(1, bookDao.listAll().size());
+    }
 
     @Test
     public void modifyingBookWithNonExcistingIdReturnsErrorMessage() {

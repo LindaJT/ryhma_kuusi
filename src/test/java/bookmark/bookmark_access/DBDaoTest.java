@@ -3,6 +3,7 @@ package bookmark.bookmark_access;
 import bookmark.domain.Book;
 import bookmark.domain.Tag;
 import java.io.File;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,5 +84,27 @@ public class DBDaoTest {
         assertEquals(book.getAuthor(), foundedBook.getAuthor());
         assertEquals(book.getNumberOfPages(), foundedBook.getNumberOfPages());
         assertEquals(book.getCurrentPage(), foundedBook.getCurrentPage());
+    }
+    @Test
+    public void listBooksByTags() {
+        dbDao.addBook(book);
+        dbDao.addTag(tag, 1);
+        List<Book> taggedBooks = dbDao.listByTag("test");
+        assertEquals(taggedBooks.size(), 1);
+              
+    }
+    @Test
+    public void canDeleteTagsFromBook() {
+        dbDao.addBook(book);
+        int bookId = dbDao.listAll().get(0).getId();
+        dbDao.addTag(tag, bookId);
+        dbDao.addTag(tag2, bookId);
+        Book foudedBook = dbDao.listAll().get(0);
+        assertEquals(foudedBook.getTags().size(), 2);
+        
+        Tag tagi = dbDao.getTagByName("test");        
+        dbDao.removeTagConnection(bookId, tagi.getId());
+        foudedBook = dbDao.listAll().get(0);
+        assertEquals(foudedBook.getTags().size(), 1);
     }
 }

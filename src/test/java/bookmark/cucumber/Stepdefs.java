@@ -43,8 +43,7 @@ public class Stepdefs {
     public void commandAddBookSelected() {
         inputLines.add("add book");
     }
-     
-    
+      
     @When("valid title {string} and author {string} and pages {string} and current page {string} are entered")
     public void validTitleAuthorAndPagesAreEntered(String title, String author, String pages, String currentPage) {
         inputLines.add(title);
@@ -226,6 +225,15 @@ public class Stepdefs {
         inputLines.add("tag");
         runApp();
     }
+    
+    @When ("valid book id {int} and existing tag name {string} are entered and o is selected")
+    public void validBookInvalisdCommandOisSelected(int id, String tag) {
+        inputLines.add(String.valueOf(id));
+        inputLines.add("0");
+        inputLines.add("tag");
+        runApp();
+    }
+    
     @Given("command taglist is selected")
     public void listBooksByTags() {
         inputLines.add("taglist");

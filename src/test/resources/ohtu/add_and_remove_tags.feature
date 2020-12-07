@@ -29,3 +29,8 @@ Feature: As a user I can add and delete tags to books
       Given command mt is selected
       When invalid book id 50 and existing tag name "eka" are entered and r is selected
       Then system will respond with "Invalid id. Aborted."
+
+    Scenario: error message is given if command is not a or r
+      Given command mt is selected
+      When valid book id 2 and existing tag name "toka" are entered and o is selected
+      Then system will respond with "Invalid command. Aborted."
