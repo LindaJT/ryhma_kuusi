@@ -107,7 +107,7 @@ public class BookmarkService {
         if (tag == null) {
             return false;
         }
-        
+
         return bookDao.removeTagConnection(bookId, tag.getId());
     }
 
@@ -186,16 +186,32 @@ public class BookmarkService {
         List<Book> bookList = bookDao.listAll();
         Collections.sort(bookList);
         bookList.forEach((book) -> {
-            List<Tag> tagList = book.getTags();
-            String sana = "";
-            sana = tagList.stream().map((t) -> t.getName() + " ").reduce(sana, String::concat);
-            io.print("Id: " + book.getId()
-                    + " | Title: " + book.getTitle()
-                    + " | Author: " + book.getAuthor()
-                    + " | Number of pages: " + book.getNumberOfPages()
-                    + " | Current page: " + book.getCurrentPage()
-                    + " | Tags: " + sana);
+            createBookOutput(book);
         });
+    }
+
+    public void listBooksByTag(String tag) {
+        List<Book> taggedList = bookDao.listByTag(tag);
+        System.out.println(taggedList.size());
+        for (Book book : taggedList) {
+            System.out.println(book.getAuthor());
+        }
+        Collections.sort(taggedList);
+        taggedList.forEach((book) -> {
+            createBookOutput(book);
+        });
+    }
+
+    private void createBookOutput(Book book) {
+        List<Tag> tagList = book.getTags();
+        String sana = "";
+        sana = tagList.stream().map((t) -> t.getName() + " ").reduce(sana, String::concat);
+        io.print("Id: " + book.getId()
+                + " | Title: " + book.getTitle()
+                + " | Author: " + book.getAuthor()
+                + " | Number of pages: " + book.getNumberOfPages()
+                + " | Current page: " + book.getCurrentPage()
+                + " | Tags: " + sana);
     }
 
     private boolean isBlankOrEmpty(String input) {

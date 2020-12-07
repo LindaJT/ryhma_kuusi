@@ -8,6 +8,7 @@ import java.util.List;
 public interface BookDao {
     
     List<Book> listAll();
+    List<Book> listByTag(String tag);
     int addBook(Book book);
     void modifyCurrentPage(int id, int page);
     void deleteBook(int id);
@@ -15,5 +16,6 @@ public interface BookDao {
     void addTag(Tag tag, int id);
     Tag getTagByName(String name);
     ArrayList<Tag> getTagsByBookId(int id);
+    ArrayList<Book> getBooksByTagId(ArrayList<Tag> tags);
     boolean removeTagConnection(int tagId, int bookId);
 }

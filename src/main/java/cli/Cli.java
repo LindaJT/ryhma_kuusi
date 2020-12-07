@@ -62,6 +62,10 @@ public class Cli {
                 case "d":
                     deleteBook();
                     break;
+                case "taglist":
+                case "tl":
+                    listBooksByTag();
+                    break;
                 default:
                     io.print("unknown command");
                     break;
@@ -156,5 +160,10 @@ public class Cli {
                 io.print("Invalid command. Aborted.");
                 break;
         }
+    }
+
+    private void listBooksByTag() {
+        String tag = io.readLine("Type the tag with which you want to list the books?");
+        service.listBooksByTag(tag);
     }
 }

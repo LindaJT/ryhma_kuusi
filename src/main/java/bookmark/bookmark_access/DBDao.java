@@ -54,6 +54,30 @@ public class DBDao implements BookDao {
     }
 
     /**
+     * @param tag - string or substring to be searched from all tags
+     * @return the list containing all books having tag
+     */
+    @Override
+    public List<Book> listByTag(String tag) {
+        //books.clear();
+        Connection connection = connect();
+        ArrayList<Book> taggedBooks = new ArrayList<>();
+        try {
+            ResultSet rs = getBooksResultSet(connection);
+            while (rs.next()) {
+                ArrayList<Tag> tags = getTagsIncludingTag(connection, tag);
+                Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
+                        rs.getInt("currentpage"), tags);
+                taggedBooks = getBooksByTagId(tags);
+            }
+        } catch (SQLException e) {
+        } finally {
+            closeConnection(connection);
+        }
+        return taggedBooks;
+    }
+
+    /**
      * @param book - Book object to be added
      * @return books id
      */
@@ -186,9 +210,9 @@ public class DBDao implements BookDao {
     }
 
     /**
-     * Removes a row from Book_tag_mapping and if it is the last one with
-     * that tag_id, also removes the corresponding row from Tag.
-     * 
+     * Removes a row from Book_tag_mapping and if it is the last one with that
+     * tag_id, also removes the corresponding row from Tag.
+     *
      * @param bookId
      * @param tagId
      * @return true if successful
@@ -203,7 +227,7 @@ public class DBDao implements BookDao {
             closeConnection(connection);
             return false;
         }
-        
+
         if (!checkIfConnectionsWithId(connection, tagId)) {
             removeTag(connection, tagId);
         }
@@ -366,6 +390,30 @@ public class DBDao implements BookDao {
         return privateGetTagsByBookId(connection, id);
     }
 
+    @Override
+    public ArrayList<Book> getBooksByTagId(ArrayList<Tag> tags) {
+        Connection connection = connect();
+        final int eka = 1;
+        ArrayList<Book> taggedBooks = new ArrayList<>();
+        for (Tag tag : tags) {
+            int id = tag.getId();
+            try {
+                String query = "SELECT * FROM Book b JOIN Book_tag_mapping bt ON b.id = bt.book_id WHERE bt.tag_id = (?)";
+                PreparedStatement p = connection.prepareStatement(query);
+                p.setInt(eka, id);
+                ResultSet rs = p.executeQuery();
+                while (rs.next()) {
+                    Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
+                        rs.getInt("currentpage"), tags);
+                    taggedBooks.add(book);
+                }
+            } catch (SQLException e) {
+                //System.err.println(e.getMessage());
+            }
+        }
+        return taggedBooks;
+    }
+
     /**
      * Function to retrieve book tags by book id from database
      *
@@ -390,7 +438,30 @@ public class DBDao implements BookDao {
         }
         return tags;
     }
-    
+
+    private ArrayList<Tag> getTagsIncludingTag(Connection connection, String tag) {
+        final int eka = 1;
+        ArrayList<Tag> tags = new ArrayList<>();
+        //System.out.println("eka");
+        try {
+            String query = "SELECT * FROM Tag";
+            PreparedStatement p = connection
+                    .prepareStatement(query);
+            ResultSet rs = p.executeQuery();
+            while (rs.next()) {
+                //System.out.println("Nimi: " + rs.getString("name"));
+                //System.out.println("id: " + rs.getInt("id") + " tai vaihtoehtoisesti " + rs.getString("id"));
+                if (rs.getString("name").contains(tag)) {
+                    tags.add(new Tag(rs.getInt("id"), rs.getString("name")));
+                }
+                //System.out.println("hip");
+            }
+        } catch (SQLException e) {
+            //System.err.println(e.getMessage());
+        }
+        return tags;
+    }
+
     private boolean checkIfConnectionsWithId(Connection connection, int tagId) {
         final int eka = 1;
         try {
@@ -407,7 +478,7 @@ public class DBDao implements BookDao {
         }
         return false;
     }
-    
+
     private void removeTag(Connection connection, int tagId) {
         try {
             String query = "DELETE FROM Tag WHERE id = (?)";
