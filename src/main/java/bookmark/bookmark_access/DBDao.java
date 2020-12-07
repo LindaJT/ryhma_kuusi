@@ -451,7 +451,9 @@ public class DBDao implements BookDao {
             while (rs.next()) {
                 //System.out.println("Nimi: " + rs.getString("name"));
                 //System.out.println("id: " + rs.getInt("id") + " tai vaihtoehtoisesti " + rs.getString("id"));
-                if (rs.getString("name").contains(tag)) tags.add(new Tag(rs.getInt("id"), rs.getString("name")));
+                if (rs.getString("name").contains(tag)) {
+                    tags.add(new Tag(rs.getInt("id"), rs.getString("name")));
+                }
                 //System.out.println("hip");
             }
         } catch (SQLException e) {
