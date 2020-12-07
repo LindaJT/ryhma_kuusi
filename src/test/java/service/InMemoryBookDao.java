@@ -134,8 +134,9 @@ public class InMemoryBookDao implements BookDao {
         taggedBooks.clear();
         for (Map.Entry<Integer, ArrayList<Tag>> entry : tags.entrySet()) {
             for (Tag tag1 : entry.getValue()) {
-                if (tag1.getName().equals(tag))
+                if (tag1.getName().equals(tag)) {
                     taggedBooks.add(getBookById(entry.getKey()));
+                }
             }
         }
         return taggedBooks;
