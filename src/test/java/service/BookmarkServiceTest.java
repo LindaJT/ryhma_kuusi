@@ -146,14 +146,14 @@ public class BookmarkServiceTest {
     
     @Test
     public void canDeleteBook() {
-        String answer = service.deleteBook("0");
+        String answer = service.deleteBook("1");
         assertEquals("Book deleted succesfully!", answer);
         assertEquals(0, bookDao.listAll().size());
     }
     
     @Test
     public void cannotDeleteNonExistingBook() {
-        String answer = service.deleteBook("1");
+        String answer = service.deleteBook("2");
         assertEquals("Error! Book ID not found.", answer);
         assertEquals(1, bookDao.listAll().size());
     }
@@ -164,5 +164,29 @@ public class BookmarkServiceTest {
         assertEquals("Error! ID should be number.", answer);
         assertEquals(1, bookDao.listAll().size());
     }
+    
+    @Test
+    public void addTagToBookAddsTagToExistingBook() {
+        Boolean success = service.addTagToBook(1, "testitagi");
+        assertTrue(success);
+        String tagName = bookDao.getTagsByBookId(1).get(0).getName();
+        assertEquals("testitagi", tagName);
+    }
+    
+    @Test
+    public void addTagToBookAddsExistingTagToExistingBook() {
+        List<String> tags = new ArrayList<>();
+        tags.add("testitagi");
+        service.addBookTags("kirja", "kirjailija", "100", "0", (ArrayList<String>) tags);
+        Boolean success = service.addTagToBook(1, "testitagi");
+        assertTrue(success);
+    }
+    
+  //  @Test
+  //  public void removeTagRemovesExistingTagFromExistingTag() {
+  //      service.addTagToBook(1, "testitagi");
+       // Boolean success = service.removeTagFromBook(1, "testitagi");
+     //   assertTrue(success);
+   // }
 
 }

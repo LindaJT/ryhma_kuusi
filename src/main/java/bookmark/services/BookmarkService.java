@@ -35,7 +35,7 @@ public class BookmarkService {
      * @return return true if inputs were valid and book was added, otherwise
      * false
      */
-    public boolean addBook(String inputTitle, String inputAuthor, String inputPages, String currentPage) {   
+    public boolean addBook(String inputTitle, String inputAuthor, String inputPages, String currentPage) {
         if (isBlankOrEmpty(currentPage)) {
             currentPage = "0";
         }
@@ -54,7 +54,7 @@ public class BookmarkService {
             return true;
         }
     }
-    
+
     /**
      * calls BookDao's method add to add book
      *
@@ -89,12 +89,41 @@ public class BookmarkService {
             return true;
         }
     }
-    
+
+    public boolean addTagToBook(int bookId, String input) {
+        Tag tag = bookDao.getTagByName(input);
+        if (tag != null) {
+            bookDao.addTag(tag, bookId);
+        } else {
+            tag = new Tag(input);
+            bookDao.addTag(tag, bookId);
+        }
+        return true;
+    }
+
+    public boolean removeTagFromBook(int bookId, String input) {
+        Tag tag = bookDao.getTagByName(input);
+
+        if (tag == null) {
+            return false;
+        }
+        
+        return bookDao.removeTagConnection(bookId, tag.getId());
+    }
+
+    public List<Tag> getTags(int id) {
+        return bookDao.getTagsByBookId(id);
+    }
+
+    public Book getBookById(int id) {
+        return bookDao.getBookById(id);
+    }
+
     /**
      * @param idString id of the book modified
      * @param pageString current page number as string to set
      * @return string that contains response
-    */
+     */
     public String modifyCurrentPage(String idString, String pageString) {
         int id;
         int page;
@@ -123,14 +152,16 @@ public class BookmarkService {
             return "Book's progress successfully updated!";
         }
     }
+
     /**
      * deletes book from database
+     *
      * @param idString user entered book id as string
      * @return string that contains response
      */
-    public String deleteBook(String idString) { 
+    public String deleteBook(String idString) {
         int id;
-        Book book; 
+        Book book;
         try {
             id = Integer.parseInt(idString);
         } catch (NumberFormatException e) {
@@ -143,7 +174,7 @@ public class BookmarkService {
             }
         } catch (Exception e) {
             return "Error! Book ID not found.";
-        }    
+        }
         bookDao.deleteBook(id);
         return "Book deleted succesfully!";
     }
@@ -163,7 +194,7 @@ public class BookmarkService {
                     + " | Author: " + book.getAuthor()
                     + " | Number of pages: " + book.getNumberOfPages()
                     + " | Current page: " + book.getCurrentPage()
-                    + " |  Tags: " + sana);
+                    + " | Tags: " + sana);
         });
     }
 

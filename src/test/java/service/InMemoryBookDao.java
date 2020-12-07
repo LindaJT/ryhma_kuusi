@@ -35,8 +35,9 @@ public class InMemoryBookDao implements BookDao {
 
     @Override
     public int addBook(Book book) {
+        book.setId(this.books.size() + 1);
         this.books.add(book);
-        return 0;
+        return book.getId();
     }
 
     @Override
@@ -71,6 +72,11 @@ public class InMemoryBookDao implements BookDao {
             ArrayList<Tag> newTagsList = new ArrayList<>();
             this.tags.put(bookId, newTagsList);
         }
+        Book b = this.getBookById(bookId);
+        if (b.getTags() == null) {
+            b.setTags(new ArrayList<Tag>());
+        }
+        b.getTags().add(tag);
     }
 
     @Override
@@ -82,5 +88,41 @@ public class InMemoryBookDao implements BookDao {
             }
         }
         return foundTag;
+    }
+
+    @Override
+    public ArrayList<Tag> getTagsByBookId(int id) {
+        List<Tag> foundTags = new ArrayList<>();
+        for (Book b : this.books) {
+            if (b.getId() == id) {
+                foundTags = (ArrayList<Tag>) b.getTags();
+            }
+        }
+        return (ArrayList<Tag>) foundTags;
+    }
+
+    @Override
+    public boolean removeTagConnection(int tagId, int bookId) {
+        if (this.getBookById(bookId) == null) {
+            return false;
+        }
+        Book b = this.getBookById(bookId);
+        
+        if (b.getTags() == null) {
+            return false;
+        }
+        List<Tag> bookTags = b.getTags();
+        int index = -1;
+        for (int i = 0; i < bookTags.size(); i++) {
+            if (tagId == (bookTags.get(i).getId())) {
+                index = i;
+            }
+        }
+        if (index == -1) {
+            return false;
+        } else {
+            b.getTags().remove(index);
+            return true;
+        }
     }
 }
