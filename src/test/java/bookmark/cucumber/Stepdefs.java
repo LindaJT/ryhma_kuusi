@@ -93,7 +93,7 @@ public class Stepdefs {
     
     @Then("system will respond with {string}")
     public void systemRespondsWithExpectedOutput(String expectedOutput) {
-        System.out.println("tulostus " + io.getPrints());
+        //System.out.println("tulostus " + io.getPrints());
         assertTrue(io.getPrints().contains(expectedOutput));
     }
 
@@ -143,7 +143,7 @@ public class Stepdefs {
     
     @Then("list will contain {string}")
     public void listContainsBook(String expected) {
-        System.out.println("tulostus " + io.getPrints());
+        //System.out.println("tulostus " + io.getPrints());
         assertTrue(io.getPrints().contains(expected));
     }
     
