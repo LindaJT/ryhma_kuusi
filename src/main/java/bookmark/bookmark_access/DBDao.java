@@ -18,6 +18,10 @@ public class DBDao implements BookDao {
 
     private final String url;
     private final List<Book> books;
+    private final int first = 1;
+    private final int second = 2;
+    private final int third = 3;
+    private final int fourth = 4;
 
     /**
      * Create database with specific name
@@ -41,7 +45,8 @@ public class DBDao implements BookDao {
             ResultSet rs = getBooksResultSet(connection);
             while (rs.next()) {
                 ArrayList<Tag> tags = privateGetTagsByBookId(connection, rs.getInt("id"));
-                Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
+                Book book = new Book(rs.getInt("id"), rs.getString("title"), 
+                        rs.getString("author"), rs.getInt("pages"),
                         rs.getInt("currentpage"), tags);
                 books.add(book);
             }
@@ -59,15 +64,12 @@ public class DBDao implements BookDao {
      */
     @Override
     public List<Book> listByTag(String tag) {
-        //books.clear();
         Connection connection = connect();
         ArrayList<Book> taggedBooks = new ArrayList<>();
         try {
             ResultSet rs = getBooksResultSet(connection);
             while (rs.next()) {
                 ArrayList<Tag> tags = getTagsIncludingTag(connection, tag);
-                Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
-                        rs.getInt("currentpage"), tags);
                 taggedBooks = getBooksByTagId(tags);
             }
         } catch (SQLException e) {
@@ -126,14 +128,14 @@ public class DBDao implements BookDao {
         Connection connection = connect();
         ResultSet rs;
         Book book = null;
-        //final int eka = 1;
         try {
-            PreparedStatement p = connection.prepareStatement("select * from book WHERE id = (?)");
-            p.setInt(1, id);
+            PreparedStatement p = connection.prepareStatement("SELECT * FROM Book "
+                    + "WHERE id = (?)");
+            p.setInt(first, id);
             rs = p.executeQuery();
 
-            book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
-                    rs.getInt("currentpage"));
+            book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), 
+                    rs.getInt("pages"), rs.getInt("currentpage"));
             rs.close();
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
@@ -155,8 +157,8 @@ public class DBDao implements BookDao {
         try {
             PreparedStatement p = connection.prepareStatement("UPDATE Book "
                     + "SET currentpage = (?) WHERE id = (?)");
-            p.setInt(1, page);
-            p.setInt(2, id);
+            p.setInt(first, page);
+            p.setInt(second, id);
             p.executeUpdate();
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
@@ -191,14 +193,13 @@ public class DBDao implements BookDao {
      */
     @Override
     public Tag getTagByName(String tagName) {
-        final int eka = 1;
         Tag tag = null;
         ResultSet rs;
         Connection connection = connect();
         try {
             PreparedStatement p = connection
-                    .prepareStatement("select * FROM tag WHERE name = (?)");
-            p.setString(eka, tagName);
+                    .prepareStatement("SELECT * FROM tag WHERE name = (?)");
+            p.setString(first, tagName);
             rs = p.executeQuery();
             tag = new Tag(rs.getInt("id"), rs.getString("name"));
         } catch (SQLException e) {
@@ -308,18 +309,15 @@ public class DBDao implements BookDao {
      * @return id for created book or zero
      */
     private int addBookStatement(Connection connection, Book book) throws SQLException {
-        final int eka = 1;
-        final int toka = 2;
-        final int kolmas = 3;
-        final int neljas = 4;
         try {
-            String query = "INSERT INTO Book (title,author,pages,currentpage) VALUES (?,?,?,?)";
+            String query = "INSERT INTO Book (title,author,pages,currentpage) "
+                    + "VALUES (?,?,?,?)";
             PreparedStatement p = connection
                     .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            p.setString(eka, book.getTitle());
-            p.setString(toka, book.getAuthor());
-            p.setInt(kolmas, book.getNumberOfPages());
-            p.setInt(neljas, book.getCurrentPage());
+            p.setString(first, book.getTitle());
+            p.setString(second, book.getAuthor());
+            p.setInt(third, book.getNumberOfPages());
+            p.setInt(fourth, book.getCurrentPage());
             p.executeUpdate();
             ResultSet rs = p.getGeneratedKeys();
             if (rs.next()) {
@@ -339,7 +337,6 @@ public class DBDao implements BookDao {
      * @return tag id for new or existing tag
      */
     private int addTagStatement(Connection connection, Tag tag) throws SQLException {
-        final int eka = 1;
         int tagId = getTagId(connection, tag);
         if (tagId != 0) {
             return tagId;
@@ -348,7 +345,7 @@ public class DBDao implements BookDao {
             String query = "INSERT OR IGNORE INTO Tag (name) VALUES (?)";
             PreparedStatement p = connection
                     .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            p.setString(eka, tag.getName());
+            p.setString(first, tag.getName());
             p.executeUpdate();
             ResultSet rs = p.getGeneratedKeys();
             if (rs.next()) {
@@ -368,12 +365,10 @@ public class DBDao implements BookDao {
      * @return tag id
      */
     private int getTagId(Connection connection, Tag tag) {
-        final int eka = 1;
         try {
             String query = "select * FROM Tag WHERE name = (?)";
-            PreparedStatement p = connection
-                    .prepareStatement(query);
-            p.setString(eka, tag.getName());
+            PreparedStatement p = connection.prepareStatement(query);
+            p.setString(first, tag.getName());
             ResultSet rs = p.executeQuery();
             if (rs.next()) {
                 return rs.getInt("id");
@@ -393,18 +388,19 @@ public class DBDao implements BookDao {
     @Override
     public ArrayList<Book> getBooksByTagId(ArrayList<Tag> tags) {
         Connection connection = connect();
-        final int eka = 1;
         ArrayList<Book> taggedBooks = new ArrayList<>();
         for (Tag tag : tags) {
             int id = tag.getId();
             try {
-                String query = "SELECT * FROM Book b JOIN Book_tag_mapping bt ON b.id = bt.book_id WHERE bt.tag_id = (?)";
+                String query = "SELECT * FROM Book b JOIN Book_tag_mapping bt "
+                        + "ON b.id = bt.book_id WHERE bt.tag_id = (?)";
                 PreparedStatement p = connection.prepareStatement(query);
-                p.setInt(eka, id);
+                p.setInt(first, id);
                 ResultSet rs = p.executeQuery();
                 while (rs.next()) {
-                    Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"), rs.getInt("pages"),
-                        rs.getInt("currentpage"), tags);
+                    Book book = new Book(rs.getInt("id"), rs.getString("title"), 
+                            rs.getString("author"), rs.getInt("pages"),
+                            rs.getInt("currentpage"), tags);
                     taggedBooks.add(book);
                 }
             } catch (SQLException e) {
@@ -422,13 +418,13 @@ public class DBDao implements BookDao {
      * @return list filled with book tags
      */
     private ArrayList<Tag> privateGetTagsByBookId(Connection connection, int id) {
-        final int eka = 1;
         ArrayList<Tag> tags = new ArrayList<>();
         try {
-            String query = "SELECT tag.name FROM Tag JOIN Book_tag_mapping ON Tag.id = Book_tag_mapping.tag_id WHERE book_id = (?)";
+            String query = "SELECT tag.name FROM Tag JOIN Book_tag_mapping ON "
+                    + "Tag.id = Book_tag_mapping.tag_id WHERE book_id = (?)";
             PreparedStatement p = connection
                     .prepareStatement(query);
-            p.setInt(eka, id);
+            p.setInt(first, id);
             ResultSet rs = p.executeQuery();
             while (rs.next()) {
                 tags.add(new Tag(rs.getString("name")));
@@ -440,21 +436,16 @@ public class DBDao implements BookDao {
     }
 
     private ArrayList<Tag> getTagsIncludingTag(Connection connection, String tag) {
-        final int eka = 1;
         ArrayList<Tag> tags = new ArrayList<>();
-        //System.out.println("eka");
         try {
             String query = "SELECT * FROM Tag";
             PreparedStatement p = connection
                     .prepareStatement(query);
             ResultSet rs = p.executeQuery();
             while (rs.next()) {
-                //System.out.println("Nimi: " + rs.getString("name"));
-                //System.out.println("id: " + rs.getInt("id") + " tai vaihtoehtoisesti " + rs.getString("id"));
                 if (rs.getString("name").contains(tag)) {
                     tags.add(new Tag(rs.getInt("id"), rs.getString("name")));
                 }
-                //System.out.println("hip");
             }
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
@@ -463,12 +454,11 @@ public class DBDao implements BookDao {
     }
 
     private boolean checkIfConnectionsWithId(Connection connection, int tagId) {
-        final int eka = 1;
         try {
             String query = "SELECT * FROM Book_tag_mapping WHERE tag_id = (?)";
             PreparedStatement p = connection
                     .prepareStatement(query);
-            p.setInt(eka, tagId);
+            p.setInt(first, tagId);
             ResultSet rs = p.executeQuery();
             if (rs.next()) {
                 return true;
@@ -516,14 +506,13 @@ public class DBDao implements BookDao {
      * @param tagId
      */
     private void insertIntoBookTagMappingTable(Connection connection, int bookId, int tagId) {
-        final int eka = 1;
-        final int toka = 2;
         try {
-            String query = "INSERT OR IGNORE INTO Book_tag_mapping (book_id, tag_id) VALUES (?, ?)";
+            String query = "INSERT OR IGNORE INTO Book_tag_mapping "
+                    + "(book_id, tag_id) VALUES (?, ?)";
             PreparedStatement p = connection
                     .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            p.setInt(eka, bookId);
-            p.setInt(toka, tagId);
+            p.setInt(first, bookId);
+            p.setInt(second, tagId);
             p.executeUpdate();
         } catch (SQLException e) {
             //System.err.println(e.getMessage());
@@ -539,7 +528,7 @@ public class DBDao implements BookDao {
      */
     private void deleteBookFromDatabase(Connection connection, int bookId) throws SQLException {
         PreparedStatement p = connection.prepareStatement("DELETE FROM Book WHERE id = (?)");
-        p.setInt(1, bookId);
+        p.setInt(first, bookId);
         p.execute();
     }
 
@@ -552,10 +541,10 @@ public class DBDao implements BookDao {
      */
     private void deleteTagBookConnectionFromDatabase(Connection connection, int bookId, int tagId) throws SQLException {
         try {
-            PreparedStatement p = connection.prepareStatement("DELETE FROM Book_tag_mapping"
-                    + " WHERE book_id = (?) AND tag_id = (?)");
-            p.setInt(1, bookId);
-            p.setInt(2, tagId);
+            PreparedStatement p = connection.prepareStatement("DELETE FROM "
+                    + "Book_tag_mapping WHERE book_id = (?) AND tag_id = (?)");
+            p.setInt(first, bookId);
+            p.setInt(second, tagId);
             p.execute();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -564,8 +553,9 @@ public class DBDao implements BookDao {
 
     private void deleteTagBookConnectionFromDatabase(Connection connection, int bookId) throws SQLException {
         try {
-            PreparedStatement p = connection.prepareStatement("DELETE FROM Book_tag_mapping WHERE book_id = (?)");
-            p.setInt(1, bookId);
+            PreparedStatement p = connection.prepareStatement("DELETE FROM "
+                    + "Book_tag_mapping WHERE book_id = (?)");
+            p.setInt(first, bookId);
             p.execute();
         } catch (SQLException e) {
             //System.err.println(e.getMessage());

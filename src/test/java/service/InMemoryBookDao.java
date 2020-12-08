@@ -157,12 +157,5 @@ public class InMemoryBookDao implements BookDao {
             }
         }
         return foundBooks;
-        /*List<Tag> foundTags = new ArrayList<>();
-        for (Book b : this.books) {
-            if (b.getId() == id) {
-                foundTags = (ArrayList<Tag>) b.getTags();
-            }
-        }
-        return (ArrayList<Tag>) foundTags;*/
     }
 }

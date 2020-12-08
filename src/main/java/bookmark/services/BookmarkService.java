@@ -197,9 +197,6 @@ public class BookmarkService {
             io.print("no books found with tag " + tag);
         } else {
             io.print("number of books with tag: " + taggedList.size());
-        /*for (Book book : taggedList) {
-            System.out.println(book.getAuthor());
-        } */
         Collections.sort(taggedList);
         taggedList.forEach((book) -> {
             createBookOutput(book);

@@ -29,7 +29,7 @@ public class Cli {
 
         while (true) {
 
-            System.out.println("");
+            io.print("");
 
             String nextCommand = io.readLine("Give a command or leave empty to quit:");
 
@@ -164,6 +164,9 @@ public class Cli {
 
     private void listBooksByTag() {
         String tag = io.readLine("Type the tag with which you want to list the books?");
-        service.listBooksByTag(tag);
+        if (tag.trim().isEmpty()) {
+            return;
+        }
+        service.listBooksByTag(tag.trim());
     }
 }

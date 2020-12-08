@@ -31,11 +31,11 @@ class Command {
             commands.add(new Command("|===========|", "===========|", "==========================================="));
             commands.add(new Command("| add book  |", " a         |", " Add a book to bookmarks."));
             commands.add(new Command("| list      |", " l         |", " List all bookmarks."));
-            commands.add(new Command("| taglist   |", " tl        |", " List books having tag or part of it"));
+            commands.add(new Command("| taglist   |", " tl        |", " List books having tag or part of it."));
             commands.add(new Command("| modpage   |", " mp        |", " Modify current page."));
             commands.add(new Command("| modtags   |", " mt        |", " Modify a bookmark's tags."));
             commands.add(new Command("| help      |", " h         |", " Show commands, shortcuts and descriptions."));
-            commands.add(new Command("| delete    |", " d         |", " Delete book permanently"));
+            commands.add(new Command("| delete    |", " d         |", " Delete book permanently."));
         }
 
         public void printAllCommands() {
