@@ -4,7 +4,7 @@
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.txt)
 [![codecov](https://codecov.io/gh/LindaJT/ryhma_kuusi/branch/main/graph/badge.svg?token=NQHsmcDB95)](https://codecov.io/gh/LindaJT/ryhma_kuusi)
 
-## linkit
+## Links
 
 [Product Backlog](https://docs.google.com/spreadsheets/d/1RO2MffWArJQC46bIBxDrssFFNXkhuvTwhy_IlThdQgs/edit?ts=5fb5358b#gid=0)
 
@@ -12,9 +12,11 @@
 
 [Sprint 2](https://docs.google.com/spreadsheets/d/1RO2MffWArJQC46bIBxDrssFFNXkhuvTwhy_IlThdQgs/edit?ts=5fb5358b#gid=1951739364)
 
+[Sprint 3](https://docs.google.com/spreadsheets/d/1RO2MffWArJQC46bIBxDrssFFNXkhuvTwhy_IlThdQgs/edit?ts=5fb5358b#gid=1343244483)
+
 [CI-service](https://github.com/LindaJT/ryhma_kuusi/actions)
 
-## definition of done
+## Definition of Done
 
 - Code is written.
 - Test written and at least 70 % of them passing.
