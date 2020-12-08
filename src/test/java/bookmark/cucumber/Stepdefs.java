@@ -64,7 +64,6 @@ public class Stepdefs {
     
     @When("invalid title {string} and  valid author {string} and valid pages {string} and current page {string} are entered")
     public void invalidTitleValidAuthorAndValidPagesAreEntered(String title, String author, String pages, String currentPage) {
-        inputLines.add("add book");
         inputLines.add(title);
         inputLines.add(author);
         inputLines.add(pages);
@@ -73,7 +72,6 @@ public class Stepdefs {
     }
     @When("valid title {string} and  invalid author {string} and valid pages {string} and current page {string} are entered")
     public void validTitleInvalidAuthorAndValidPagesAreEntered(String title, String author, String pages, String currentPage) {
-        inputLines.add("add book");
         inputLines.add(title);
         inputLines.add(author);
         inputLines.add(pages);
