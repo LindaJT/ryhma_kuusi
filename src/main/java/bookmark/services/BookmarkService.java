@@ -186,35 +186,43 @@ public class BookmarkService {
         List<Book> bookList = bookDao.listAll();
         Collections.sort(bookList);
         bookList.forEach((book) -> {
-            createBookOutput(book);
+            List<Tag> tagList = book.getTags();
+            String sana = "";
+            sana = tagList.stream().map((t) -> t.getName() + " ").reduce(sana, String::concat);
+            io.print("Id: " + book.getId()
+                    + " | Title: " + book.getTitle()
+                    + " | Author: " + book.getAuthor()
+                    + " | Number of pages: " + book.getNumberOfPages()
+                    + " | Current page: " + book.getCurrentPage()
+                    + " | Tags: " + sana);
         });
     }
 
     public void listBooksByTag(String tag) {
         List<Book> taggedList = bookDao.listByTag(tag);
-        
+
         if (taggedList.isEmpty()) {
             io.print("no books found with tag " + tag);
         } else {
             io.print("number of books with tag: " + taggedList.size());
-        Collections.sort(taggedList);
-        taggedList.forEach((book) -> {
-            createBookOutput(book);
-        });
+            Collections.sort(taggedList);
+            taggedList.forEach((book) -> {
+                List<Tag> tagList = book.getTags();
+                String sana = "";
+                sana = tagList.stream().map((t) -> t.getName() + " ").reduce(sana, String::concat);
+                io.print("Id: " + book.getId()
+                        + " | Title: " + book.getTitle()
+                        + " | Author: " + book.getAuthor()
+                        + " | Number of pages: " + book.getNumberOfPages()
+                        + " | Current page: " + book.getCurrentPage()
+                        + " | Tags: " + sana);
+            });
         }
-        
+
     }
 
     private void createBookOutput(Book book) {
-        List<Tag> tagList = book.getTags();
-        String sana = "";
-        sana = tagList.stream().map((t) -> t.getName() + " ").reduce(sana, String::concat);
-        io.print("Id: " + book.getId()
-                + " | Title: " + book.getTitle()
-                + " | Author: " + book.getAuthor()
-                + " | Number of pages: " + book.getNumberOfPages()
-                + " | Current page: " + book.getCurrentPage()
-                + " | Tags: " + sana);
+
     }
 
     private boolean isBlankOrEmpty(String input) {

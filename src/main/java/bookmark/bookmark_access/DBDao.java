@@ -391,6 +391,7 @@ public class DBDao implements BookDao {
         ArrayList<Book> taggedBooks = new ArrayList<>();
         for (Tag tag : tags) {
             int id = tag.getId();
+            String tagName = tag.getName();
             try {
                 String query = "SELECT * FROM Book b JOIN Book_tag_mapping bt "
                         + "ON b.id = bt.book_id WHERE bt.tag_id = (?)";
@@ -398,9 +399,10 @@ public class DBDao implements BookDao {
                 p.setInt(first, id);
                 ResultSet rs = p.executeQuery();
                 while (rs.next()) {
+                    ArrayList booksTags = getTagsByBookId(rs.getInt("id"));
                     Book book = new Book(rs.getInt("id"), rs.getString("title"), 
                             rs.getString("author"), rs.getInt("pages"),
-                            rs.getInt("currentpage"), tags);
+                            rs.getInt("currentpage"), booksTags);
                     taggedBooks.add(book);
                 }
             } catch (SQLException e) {
