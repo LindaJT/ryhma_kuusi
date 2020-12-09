@@ -16,6 +16,8 @@
 
 [CI-service](https://github.com/LindaJT/ryhma_kuusi/actions)
 
+[Loppuraportti](https://docs.google.com/document/d/1DzRszKbKNxouJZtf2zbFiWVaoo5qkk2gw8DmzcWRvnE/edit)
+
 ## Definition of Done
 
 - Code is written.
