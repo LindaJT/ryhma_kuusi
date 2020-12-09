@@ -218,11 +218,6 @@ public class BookmarkService {
                         + " | Tags: " + sana);
             });
         }
-
-    }
-
-    private void createBookOutput(Book book) {
-
     }
 
     private boolean isBlankOrEmpty(String input) {
