@@ -6,8 +6,7 @@ You can download the newest version of the application from the [releases-page](
 
 The program is a jar-file. You can run such a file using Java, which itself supports multiple operating systems, such as Windows and Mac OSX among various Linux- and BSD -based systems. Make sure that you have a sensibly modern version of Java installed on your system.
 
-Run the program using your system's command line (for example, in Windows it would be 'cmd.exe'). On the command line, navigate to the folder where you downloaded the jar-file and run the command `java -jar shadowJar.jar` (where the last part is the file's name -- change it if needed). Run the app by command **`gradle run`**
-or **`./gradlew run`** depending which works on your computer.
+Run the program using your system's command line (for example, in Windows it would be 'cmd.exe'). On the command line, navigate to the folder where you downloaded the jar-file and run the command `java -jar shadowJar.jar` (where the last part is the file's name -- change it if needed). 
 
 Please note that using the application will cause a database file 'bookmark.db' to be created in the jar-file's folder. This file contains your saved data regarding the bookmarks, so avoid manipulating it in any way.
 
